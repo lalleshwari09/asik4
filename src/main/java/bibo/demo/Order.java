@@ -1,10 +1,10 @@
 package bibo.demo;
 
 public class Order {
-    private int orderId;
-    private Item product;
-    private int quantity;
-    private Customer customer;
+    private final int orderId;
+    private final Item product;
+    private final int quantity;
+    private final Customer customer;
 
     public Order(int orderId, Item product, int quantity, Customer customer) {
         this.orderId = orderId;

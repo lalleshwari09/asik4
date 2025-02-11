@@ -9,12 +9,15 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
 
 import bibo.demo.Customer;
 
 @Repository
 public class CustomerRepository {
+    private static final Logger logger = LoggerFactory.getLogger(CustomerRepository.class);
     private static final String URL = "jdbc:postgresql://localhost:5432/Online_Shopping_System";
     private static final String USER = "postgres";
     private static final String PASSWORD = "598041";
@@ -31,7 +34,7 @@ public class CustomerRepository {
             stmt.setLong(3, customer.getNumber());
             stmt.executeUpdate();
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.error("Error adding customer with ID " + customer.getCustomerId() + ": ", e);
         }
     }
 
@@ -40,13 +43,10 @@ public class CustomerRepository {
         String sql = "SELECT * FROM customers";
         try (Connection conn = connect(); Statement stmt = conn.createStatement(); ResultSet rs = stmt.executeQuery(sql)) {
             while (rs.next()) {
-                int customerId = rs.getInt("customer_id");
-                String name = rs.getString("name");
-                long number = rs.getLong("number");
-                customers.add(new Customer(customerId, name, number));
+                customers.add(new Customer(rs.getInt("customer_id"), rs.getString("name"), rs.getLong("number")));
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.error("Error retrieving all customers: ", e);
         }
         return customers;
     }
@@ -57,15 +57,13 @@ public class CustomerRepository {
             stmt.setInt(1, customerId);
             try (ResultSet rs = stmt.executeQuery()) {
                 if (rs.next()) {
-                    String name = rs.getString("name");
-                    long number = rs.getLong("number");
-                    return new Customer(customerId, name, number);
+                    return new Customer(customerId, rs.getString("name"), rs.getLong("number"));
                 }
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.error("Error retrieving customer with ID " + customerId + ": ", e);
         }
-        return null; // return null if no customer found
+        return null;
     }
 
     public void deleteCustomer(int customerId) {
@@ -74,7 +72,7 @@ public class CustomerRepository {
             stmt.setInt(1, customerId);
             stmt.executeUpdate();
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.error("Error deleting customer with ID " + customerId + ": ", e);
         }
     }
 
@@ -86,7 +84,7 @@ public class CustomerRepository {
             stmt.setInt(3, customerId);
             stmt.executeUpdate();
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.error("Error updating customer with ID " + customerId + ": ", e);
         }
     }
 }

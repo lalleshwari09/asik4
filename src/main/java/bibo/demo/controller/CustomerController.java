@@ -2,6 +2,7 @@ package bibo.demo.controller;
 
 import java.util.List;
 
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -23,10 +24,11 @@ public class CustomerController {
         this.customerService = customerService;
     }
 
-    @PostMapping
-    public void addCustomer(@RequestBody Customer customer) {
-        customerService.addCustomer(customer);
-    }
+@PostMapping("/customer")
+public ResponseEntity<String> addCustomer(@RequestBody Customer customer) {
+    customerService.addCustomer(customer);
+    return ResponseEntity.ok("Customer added successfully");
+}
 
     @GetMapping
     public List<Customer> getAllCustomers() {

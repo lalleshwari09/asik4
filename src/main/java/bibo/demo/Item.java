@@ -1,9 +1,9 @@
 package bibo.demo;
 
 public class Item {
-    private int productId;
-    private String name;
-    private double price;
+    private final int productId;
+    private final String name;
+    private final double price;
 
     public Item(int productId, String name, double price) {
         this.productId = productId;
